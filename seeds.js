@@ -12,10 +12,7 @@ async function populateEmployees () {
   //create connection with the database
   const connection = await 
   mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'rootroot',
-    database: 'employee_tracker_db'
+   //data
   });
   //start our inquirer prompt 
   const answers = await 
