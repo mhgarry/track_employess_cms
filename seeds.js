@@ -1,3 +1,4 @@
+const inquirer = require('inquirer')
 //creating our functions to apopulate the tables labeled as "seeds" 
 //https://dzone.com/articles/how-to-interact-with-a-database-using-async-functi used as reference
 
@@ -8,7 +9,7 @@
   const roles = await queries.getAllroles()
   const employees = await queries.getAllEmployees() 
   }
-//using async await inquirer prompt to populate role.title and role.id with the answers to prompted question
+//using async await inquirer prompt to populate role.title and role.id with the answers to prompted questions 
 const yourRole = roles.map((role) => 
 ({
   name : role.title,
