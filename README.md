@@ -64,14 +64,18 @@
   I used nodejs, mySql, mySql2, inquirer, sequelize, nodemon, and console.table to build this app. I also used
   https://dzone.com/articles/how-to-interact-with-a-database-using-async-function as a reference for creating async 
   functions to populate a database with. I used https://www.tabnine.com/code/javascript/functions/inquirer/prompt for examples 
-  of how to prompt the users with inquirer questions and how to get the data I needed in usable form. 
+  of how to prompt the users with inquirer questions and how to get the data I needed in usable form. I used this website to figure
+  out how i can use inquirer and mysql2 together https://javascript.plainenglish.io/how-to-inquirer-js-c10a4e05ef1f. I also used 
+  the dotenv npm to make a .env file and I added a .env.example file for other developers to use
 
 ## Tests
   Under construction 
 
 ## How to Contribute 
   Any developer is welcome to contribute to this project by forking the repository and using the guidlines laid out by github 
-  for contributions found here https://docs.github.com/en/get-started/quickstart/contributing-to-projects. 
+  for contributions found here https://docs.github.com/en/get-started/quickstart/contributing-to-projects. I used a .env file on
+  with this project and I have a .env.example for other developers to use. Used this page for conn.execute command
+  https://www.tabnine.com/code/javascript/functions/oracledb/Connection/execute
 
 ## Questions 
   If you have any questions, contributions, or inquires about this application or any of the other applications on my repository
