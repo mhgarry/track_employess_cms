@@ -2,10 +2,9 @@
   "name": "track_employess_cms",
   "version": "1.0.0",
   "description": "",
-  "main": "connection.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node connection.js",
-    "test": "nodemon connection"
+    "start": "node controllers/index.js"
   },
   "keywords": [],
   "author": "",
