@@ -2,9 +2,10 @@
   "name": "track_employess_cms",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "connection.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node connection.js",
+    "test": "nodemon connection"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +14,8 @@
     "console.table": "^0.10.0",
     "dotenv": "^16.0.3",
     "inquirer": "^8.2.5",
-    "mysql2": "^3.2.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.2.4",
     "nodemon": "^2.0.22",
     "sequelize": "^6.31.0"
   }
