@@ -129,10 +129,10 @@ const showRoles = async () => {
 const showEmployees = async () => {
   console.log('Showing all employees');
   const sql = `SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager 
-               FROM employee e 
-               LEFT JOIN role ON e.role_id = role.id 
-               LEFT JOIN department ON role.department_id = department.id 
-               LEFT JOIN employee m ON e.manager_id = m.id`;
+        FROM employee e 
+        LEFT JOIN role ON e.role_id = role.id 
+        LEFT JOIN department ON role.department_id = department.id 
+        LEFT JOIN employee m ON e.manager_id = m.id`;
   try {
     const [rows, fields] = await connection.promise().query(sql);
     console.table(rows);
@@ -142,4 +142,29 @@ const showEmployees = async () => {
   }
 };
 
+// function to add a department
+const addDepartment = async () => {
+  console.log('Adding a department');
+  const department = await inquirer.prompt([{
+    type: 'input',
+    name: 'name',
+    message: 'What is the name of the department you would like to add?',
+    validate: (inupt) => {
+      if (!input){
+        return 'Please enter a department name';
+      }
+      return true;
+    }
+  }]);
+  const sql = `INSERT INTO department (name) VALUES (?)`;
+  const params = [department.name];
+  try {
+    const [rows, fields] = await connection.promise().query(sql, params);
+    console.table(rows);
+    console.log('Added departmenet ${department.name} with ID ${rows.insertId');
+    promptUser();
+  } catch (error) {
+    console.log(error);
+  }
+  };
 promptUser()
