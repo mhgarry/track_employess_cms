@@ -115,5 +115,17 @@ const showDepartments = async () => {
 
 };
 
+
 // function to display all roles 
-// const showRoles = async ()
+const showRoles = async () => {
+  console.log('Showing all roles');
+  const sql = 'SELECT role.id AS id, role.title AS name FROM role'
+  try {
+    const [ rows, field ] = await connection.promise().query(sql);
+    console.table(rows);
+    promptUser();
+  } catch (error){
+    console.log(error);
+  }
+  }
+promptUser()
