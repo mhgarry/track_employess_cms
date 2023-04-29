@@ -359,7 +359,8 @@ const updateEmployee = async () => {
       choices: roles,
     }])
     // add role id to the paramsareters array
-    const params = [employeeChoice.employee, roleChoice.role];
+    const params = [roleChoice.role, employeeChoice.employee];
+
     // execute the sql query to insert new employee into database
     const [rows] = await connection.execute(
       'UPDATE employee SET role_id =? WHERE id =?',
@@ -371,4 +372,75 @@ const updateEmployee = async () => {
     console.error(error);
   }
 }; 
+// function to update an employee's manager 
+const updateManager = async () => {
+  try{
+   // get employees list from employee table 
+   const employeeSql =  `SELECT id, first_name, last_name FROM employee`;
+   const [employeesData] = await connection.promise().query(employeeSql); 
+   const employees = employeesData.map(
+    ({ id, first_name, last_name}) => ({
+       name: first_name + " "+ last_name, value: id }));
+   // choose employee to update 
+   const empChoice = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'name',
+      message: 'Which employee would you like to update?',
+      choices: employees
+    }
+   ]);
+   // get managers list from the employee table 
+   const employee = empChoice.name
+   const params = [employee];
+   // execute the sql query to insert new employee into database
+   const managerSql = `SELECT id, * FROM employee`;
+   const [managerData] = await connection.promise().query(managerSql);
+   const managers = managerData.map(({ id, first_name, last_name }) => (
+    { name: first_name + " " + last_name, value: id }));
+    // choose employee to make manager 
+    const managerChoice = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'manager',
+        message: 'Who is the employee\'s new manager?',
+        choices: managers
+      }
+    ]);
+    // add manager id to the parmameters array
+    const manager = managerChoice.manager;
+    params.push(manager);
+    // execute the sql query to insert new employee into database
+    
+    employee = params[0];
+    params[0] = manager;
+    params[1] = employee;
+   // insert new employee into database
+    const sql = `UPDATE employee SET manager_id = ? WHERE id = ?`;
+    await connection.promise().query(sql, params);  
+
+    console.log(`Updated ${employee}'s manager to ${manager}!`);
+    showEmployees();
+    } catch (error) {
+    console.error(error);
+  }
+};
+// function to view employees by department 
+const employeeDepartment = async () => { 
+  console.log('Showing employees by department');
+  const sql = `SELECT employee.first_name, 
+                      employee.last_name,
+                      department.name AS department
+                    FROM employee 
+                    LEFT JOIN role ON employee.role_id = role.id
+                    LEFT JOIN department ON role.department_id = department.id`;
+  try {
+    const [rows, fields] = await connection.promise().query(sql);
+    console.table(rows);
+    promptUser();
+    } catch (error) {
+    console.error(error);
+  }
+};
+
 promptUser()
