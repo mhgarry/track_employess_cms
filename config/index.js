@@ -5,7 +5,7 @@ const inquirer = require('inquirer');
 // require console.table
 const cTable = require('console.table');
 // require database connection
-const connection = require('./config/connection');
+const connection = require('./connection');
 // prompts user to pick a function to run a process within the application awaits the user to select a function to run
 const promptUser = async () => {
   try {
@@ -99,3 +99,19 @@ const promptUser = async () => {
     console.log(error);
   }
 };
+
+//function to display all departments 
+
+const showDepartments = async () => {
+  console.log('Showing all departments');
+  const sql = `SELECT department.id AS id, department.name AS department FROM department`;
+  try {
+    const [rows, fields] = await connection.promise().query(sql);
+    console.table(rows);
+    promptUser();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+promptUser()
