@@ -1,6 +1,6 @@
 // require mysql2
 const mysql = require('mysql2');
-// reuqire inquirer
+// require inquirer
 const inquirer = require('inquirer');
 // require console.table
 const cTable = require('console.table');
@@ -11,7 +11,7 @@ const promptUser = async () => {
   try {
     const answers = await inquirer.prompt([
       {
-        // promt the user using inquirer to select a function to run wihin the application
+        // prompt the user using inquirer to select a function to run within the application
         type: 'list',
         name: 'choices',
         message: 'What would you like to do?',
@@ -112,6 +112,8 @@ const showDepartments = async () => {
   } catch (error) {
     console.log(error);
   }
+
 };
 
-promptUser()
+// function to display all roles 
+// const showRoles = async ()
