@@ -153,16 +153,15 @@ const addDepartment = async () => {
           message: 'What department do you want to add?',
           validate: (addDept) => {
             if (addDept) {
-                return true;
-            } else {
-                console.log('Please enter a department');
-                return false;
+              return true;
             }
-          }
-        }
+            console.log('Please enter a department');
+            return false;
+          },
+        },
       ])
-      .then((answer) => resolve(answer))
-      .catch((error) => reject(error));
+        .then((answer) => resolve(answer))
+        .catch((error) => reject(error));
     });
 
     const sql = `INSERT INTO department (name)
@@ -170,7 +169,7 @@ const addDepartment = async () => {
 
     connection.query(sql, answer.addDept, (err, result) => {
       if (err) throw err;
-      console.log('Added ' + answer.addDept + ' to departments!');
+      console.log(`Added ${answer.addDept} to departments!`);
 
       showDepartments();
     });
@@ -201,9 +200,10 @@ const addRole = async () => {
       validate: (title) => {
         if (title) {
           return true;
-        } else {
-          console.log('Please enter a title');
-          return false; } },
+        }
+        console.log('Please enter a title');
+        return false;
+      },
     },
     {
       type: 'input',
@@ -213,9 +213,8 @@ const addRole = async () => {
         if (isNaN(salary) || !salary) {
           console.log('Please enter a valid number');
           return false;
-        } else {
-          return true;
         }
+        return true;
       },
     },
     {
@@ -241,5 +240,86 @@ const addRole = async () => {
   } catch (error) {
     console.error(error);
   }
+};
+
+// function to add an employee
+const addEmployee = async () => {
+  try {
+    // prompt user for employee's first and last name
+    const answers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'firstName',
+        message: 'What is the employee\'s first name?',
+        validate: (firstName) => {
+          if (firstName) {
+            return true;
+          }
+          console.log('Please enter the employee\'s first name');
+          return false;
+        },
+      },
+      {
+        type: 'input',
+        name: 'lastName',
+        message: 'What is the employee\'s last name?',
+        validate: (lastName) => {
+          if (lastName) {
+            return true;
+          }
+          console.log('Please enter the employee\'s last name');
+          return false;
+        },
+      },
+    ]);
+
+    // construct paramaters array with first and last name for sql query
+    const params = [answers.firstName, answers.lastName];
+    // get roles list from the roles table
+    const [roleRows] = await connection.execute('SELECT id, title FROM role');
+    // construct choices array for the inquirer prompt
+    const roles = roleRows.map((role) => ({
+      name: role.title,
+      value: role.id,
+    }));
+    // prompt user to select employee's role from the available roles table
+    const roleChoice = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'role',
+        message: 'What is the employee\'s role?',
+        choices: roles,
+      },
+    ]);
+    // add role id to the paramsareters array
+    params.push(roleChoice.roleId);
+    // get list of employees to choose from for employee manager
+    const [managerRows] = await connection.execute('SELECT id, first_name, last_name FROM employee');
+    // construct choices array for the inquirer manager prompt
+    const managers = managerRows.map((manager) => ({
+      name: `${manager.first_name} ${manager.last_name}`,
+      value: manager.id,
+    }));
+    // prompt user to select employee/s manager from list of available managers
+    const managerChoice = await inquirer.prompt([{
+      type: 'list',
+      name: 'manager',
+      message: 'Who is the employee\'s manager?',
+      choices: managers,
+    },
+    ]);
+    // add manager id to the parameters array
+    params.push(managerChoice.mangerId);
+    // execute the sql query to insert new employee into database
+    const [rows] = await connection.execute(
+      `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+    VALUES (?,?,?,?)`,
+      params,
+    );
+    console.log(`Added ${answers.firstName} ${answers.lastName} to employees!`);
+  } catch (error) {
+    console.error(error);
+  }
+  showEmployees();
 };
 promptUser()
