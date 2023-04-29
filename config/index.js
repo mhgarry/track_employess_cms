@@ -470,4 +470,32 @@ const deleteRole = async () => {
     console.error(err);
   }
 };
+
+// function to delete a department 
+const deleteDepartment = async () => {
+  const departmentSql = `SELECT * FROM department`;
+  try {
+    const [rows, fields] = await connection.promise().query(departmentSql);
+    const department = rows.map(({ title, id }) => ({ name: title, value: id }));
+    const departmentChoice = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'department',
+        message: 'Which department would you like to delete?',
+        choices: department
+  }
+]);
+const departmentId = departmentChoice.department;
+const deleteSql = `DELETE FROM department WHERE id = ?`;
+
+const [result, _] = await connection.promise().query(deleteSql, departmentId);
+
+console.log('Sucsessfully deleted department!');
+
+await showDepartments();
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 promptUser()
