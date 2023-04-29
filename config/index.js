@@ -322,4 +322,53 @@ const addEmployee = async () => {
   }
   showEmployees();
 };
+// function to update an employee's role 
+const updateEmployee = async () => {
+  try {
+    // get employees list for the employee table 
+    const employees = await new Promise ((resolve, reject) => {
+      const sql = 'SELECT id, first_name, last_name FROM employee';
+      connection.query(sql, (err, result) =>
+      {
+        if (err) reject(err);
+        const employees = result.map((employee) => ({ name: `${employee.first_name} ${employee.last_name}`, value: employee.id }));
+        resolve(employees);
+      });
+
+    })
+    // prompt user to select employee to update 
+    const employeeChoice = await inquirer.prompt([{
+      type: 'list',
+      name: 'employee',
+      message: 
+      'Which employee would you like to update?',
+      choices: employees
+    }])
+    // get roles list from the roles table
+    const [roleRows] = await connection.execute('SELECT id, title FROM role');
+    // construct choices array for the inquirer prompt
+    const roles = roleRows.map((role) => ({
+      name: role.title,
+      value: role.id,
+    }));
+    // prompt user to select employee's role from the available roles table
+    const roleChoice = await inquirer.prompt([{
+      type: 'list',
+      name: 'role',
+      message: 'What is the employee\'s new role?',
+      choices: roles,
+    }])
+    // add role id to the paramsareters array
+    const params = [employeeChoice.employee, roleChoice.role];
+    // execute the sql query to insert new employee into database
+    const [rows] = await connection.execute(
+      'UPDATE employee SET role_id =? WHERE id =?',
+      params,
+    );
+    console.log(`Updated ${employeeChoice.employee}'s role to ${roleChoice.role}!`);
+    showEmployees();
+  } catch (error) {
+    console.error(error);
+  }
+}; 
 promptUser()
