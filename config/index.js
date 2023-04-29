@@ -443,4 +443,31 @@ const employeeDepartment = async () => {
   }
 };
 
+// function to delete a role 
+const deleteRole = async () => {
+  const roleSql = `SELECT * FROM role`;
+
+  try {
+    const [rows, fields] = await connection.promise().query(roleSql);
+    const role = rows.map(({ title, id}) => ({ name: title, value: id }));
+    const roleChoice = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'role',
+        message: 'Which role would you like to delete?',
+        choices: role
+      }
+    ]);
+    const roleId = roleChoice.role; 
+    const deleteSql = `DELETE FROM role WHERE id = ?`;
+
+    const [result, _] = await connection.promise().query(deleteSql, roleId);
+
+    console.log('Successfully deleted role!');
+
+    await showRoles();
+  } catch (err) {
+    console.error(err);
+  }
+};
 promptUser()
