@@ -83,10 +83,6 @@ const promptUser = async () => {
       case 'Delete an employee':
         deleteEmployee();
         break;
-        // run the viewDepartmentBudgets function to view department budgets
-      case 'View department budgets':
-        viewBudget();
-        break;
         // run the exit function to exit the application
       case 'Exit':
         connection.end();
@@ -498,4 +494,28 @@ await showDepartments();
   }
 };
 
+// function to delete an employee 
+const deleteEmployee = async () => {
+  const employeeSql = `SELECT * FROM employee`;
+  try {
+    const [rows, fields] = await connection.promise().query(employeeSql);
+    const employee = rows.map(({ id, first_name, last_name}) => ({ name: first_name + " " + last_name, value: id}));
+    const employeeChoice = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'employee',
+        message: 'Which employee would you like to delete?',
+        choices: employee
+      }
+    ]);
+    const employeeId = employeeChoice.employee;
+    const deleteSql = `DELETE FROM employee WHERE id =?`;
+    const [result, _] = await connection.promise().query(deleteSql, employeeId);
+
+    console.log('Successfully deleted employee!');
+    await showEmployees();
+    } catch (err) {
+    console.error(err);
+  }
+};
 promptUser()
