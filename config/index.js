@@ -99,8 +99,7 @@ const promptUser = async () => {
   }
 };
 
-//function to display all departments 
-
+// function to display all departments
 const showDepartments = async () => {
   console.log('Showing all departments');
   const sql = `SELECT department.id AS id, department.name AS department FROM department`;
@@ -111,20 +110,36 @@ const showDepartments = async () => {
   } catch (error) {
     console.log(error);
   }
-
 };
 
-
-// function to display all roles 
+// function to display all roles
 const showRoles = async () => {
   console.log('Showing all roles');
-  const sql = 'SELECT role.id AS id, role.title AS role FROM role'
+  const sql = 'SELECT role.id AS id, role.title AS role FROM role';
   try {
-    const [ rows, field ] = await connection.promise().query(sql);
+    const [rows, fields] = await connection.promise().query(sql);
     console.table(rows);
     promptUser();
-  } catch (error){
+  } catch (error) {
     console.log(error);
   }
+};
+
+// function to display all employees
+const showEmployees = async () => {
+  console.log('Showing all employees');
+  const sql = `SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager 
+               FROM employee e 
+               LEFT JOIN role ON e.role_id = role.id 
+               LEFT JOIN department ON role.department_id = department.id 
+               LEFT JOIN employee m ON e.manager_id = m.id`;
+  try {
+    const [rows, fields] = await connection.promise().query(sql);
+    console.table(rows);
+    promptUser();
+  } catch (error) {
+    console.log(error);
   }
+};
+
 promptUser()
